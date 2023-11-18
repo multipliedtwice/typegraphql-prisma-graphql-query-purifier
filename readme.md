@@ -115,7 +115,7 @@ It doesn't copy `.gql` files, only watches for it. If your frontend is in anothe
 
 ### Contributing
 
-Contributions are welcome! Please read our contributing guidelines to get started.
+Contributions are welcome!
 
 #### License
 
