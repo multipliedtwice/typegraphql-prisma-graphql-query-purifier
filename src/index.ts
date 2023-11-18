@@ -35,11 +35,7 @@ export class GraphQLQueryPurifier {
     });
   }
 
-  public customGraphQLMiddleware = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public filter = (req: Request, res: Response, next: NextFunction) => {
     if (req.body && req.body.query) {
       // Get all allowed queries as an array of strings
       const allowedQueries = Object.values(this.queryMap);

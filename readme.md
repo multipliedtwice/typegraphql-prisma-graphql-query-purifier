@@ -94,7 +94,7 @@ const queryPurifier = new GraphQLQueryPurifier(gqlpath);
 
 // make sure body parser is placed before
 app.use(json());
-app.use(queryPurifier.customGraphQLMiddleware);
+app.use(queryPurifier.filter);
 
 // your graphql middleware
 ```
@@ -105,7 +105,7 @@ app.use(queryPurifier.customGraphQLMiddleware);
 
 gqlPath: Path to the directory containing your .gql files or folders with it.
 
-- customGraphQLMiddleware(req, res, next)
+- filter(req, res, next)
 
 An Express middleware function to filter incoming GraphQL queries.
 

@@ -4,5 +4,5 @@ export declare class GraphQLQueryPurifier {
     private queryMap;
     constructor(gqlPath: string);
     private loadQueries;
-    customGraphQLMiddleware: (req: Request, res: Response, next: NextFunction) => void;
+    filter: (req: Request, res: Response, next: NextFunction) => void;
 }
