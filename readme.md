@@ -120,3 +120,5 @@ Contributions are welcome!
 #### License
 
 This project is licensed under the MIT License.
+
+Free Kanban app with integrated chat: https://rememo.io
