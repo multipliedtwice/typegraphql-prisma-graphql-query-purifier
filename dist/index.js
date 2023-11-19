@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GraphQLQueryPurifier = void 0;
 const fs_1 = __importDefault(require("fs"));
-const glob_1 = __importDefault(require("glob"));
+const glob_1 = require("glob");
 const graphql_1 = require("graphql");
 const path_1 = __importDefault(require("path"));
 const merge_1 = require("./merge");
@@ -47,8 +47,8 @@ class GraphQLQueryPurifier {
         this.allowAll = allowAll;
         this.allowStudio = allowStudio;
     }
-    loadQueries() {
-        const files = glob_1.default.sync(`${this.gqlPath}/**/*.gql`);
+    async loadQueries() {
+        const files = await (0, glob_1.glob)(`${this.gqlPath}/**/*.gql`);
         files.forEach((file) => {
             if (path_1.default.extname(file) === '.gql') {
                 const content = fs_1.default.readFileSync(file, 'utf8');

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-import glob from 'glob';
+import { glob } from 'glob';
 import { OperationDefinitionNode, parse } from 'graphql';
 import path from 'path';
 
@@ -28,8 +28,8 @@ export class GraphQLQueryPurifier {
     this.allowStudio = allowStudio;
   }
 
-  private loadQueries() {
-    const files = glob.sync(`${this.gqlPath}/**/*.gql`);
+  private async loadQueries() {
+    const files = await glob(`${this.gqlPath}/**/*.gql`);
 
     files.forEach((file) => {
       if (path.extname(file) === '.gql') {
