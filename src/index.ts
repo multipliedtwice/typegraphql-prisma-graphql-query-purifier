@@ -151,11 +151,7 @@ export class GraphQLQueryPurifier {
 
     if (req.body && req.body.query) {
       // Use mergeQueries to filter the incoming request query
-      const filteredQuery = mergeQueries(
-        req.body.query,
-        allowedQueries,
-        req.body.operationName
-      );
+      const filteredQuery = mergeQueries(req.body.query, allowedQueries);
 
       if (!filteredQuery.trim()) {
         console.warn(

@@ -32,15 +32,13 @@ function mergeQueries(requestQuery, allowedQueries) {
             if (!allowedPaths.has(currentPath)) {
                 return null; // Remove the field from the AST
             }
-            return undefined; // Continue visiting child nodes
         },
     });
     // Check if the modified query has any fields left in its selection set
-    const hasFields = modifiedAST.definitions.some((def) => def.kind === 'OperationDefinition' &&
+    const hasValidFields = modifiedAST.definitions.some((def) => def.kind === 'OperationDefinition' &&
         def.selectionSet.selections.length > 0);
-    if (!hasFields) {
-        // Return a placeholder or minimal query
-        return '';
+    if (!hasValidFields) {
+        return ''; // Return an empty string if no valid fields are left
     }
     return (0, graphql_1.print)(modifiedAST);
 }

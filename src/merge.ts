@@ -11,8 +11,7 @@ function getPath(node: FieldNode, ancestors: ASTNode[]) {
 
 export function mergeQueries(
   requestQuery: string,
-  allowedQueries: string[],
-  operationName?: string
+  allowedQueries: string[]
 ): string {
   if (!requestQuery.trim()) {
     return '';
@@ -38,20 +37,18 @@ export function mergeQueries(
       if (!allowedPaths.has(currentPath)) {
         return null; // Remove the field from the AST
       }
-      return undefined; // Continue visiting child nodes
     },
   });
 
   // Check if the modified query has any fields left in its selection set
-  const hasFields = modifiedAST.definitions.some(
+  const hasValidFields = modifiedAST.definitions.some(
     (def) =>
       def.kind === 'OperationDefinition' &&
       def.selectionSet.selections.length > 0
   );
 
-  if (!hasFields) {
-    // Return a placeholder or minimal query
-    return '';
+  if (!hasValidFields) {
+    return ''; // Return an empty string if no valid fields are left
   }
 
   return print(modifiedAST);

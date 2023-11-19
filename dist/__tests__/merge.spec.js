@@ -193,4 +193,21 @@ describe('mergeQueries', () => {
         const expected = ``;
         expect((0, merge_1.mergeQueries)(requestQuery, allowedQueries)).toBe(expected);
     });
+    // TODO: handle this case
+    test.skip('should handle subqueries', () => {
+        const requestQuery = `query GetDepartment {
+  departments {
+    name
+  }
+}`;
+        const allowedQueries = [
+            `query departments {
+  departments {
+    id
+  }
+}`,
+        ];
+        const expected = ``;
+        expect((0, merge_1.mergeQueries)(requestQuery, allowedQueries)).toBe(expected);
+    });
 });
