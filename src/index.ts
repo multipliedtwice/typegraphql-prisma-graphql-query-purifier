@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-import { glob } from 'glob';
 import { OperationDefinitionNode, parse } from 'graphql';
 import path from 'path';
-
+// @ts-ignore
+import glob from 'glob';
 import { mergeQueries } from './merge';
 
 export class GraphQLQueryPurifier {
@@ -28,10 +28,10 @@ export class GraphQLQueryPurifier {
     this.allowStudio = allowStudio;
   }
 
-  private async loadQueries() {
-    const files = await glob(`${this.gqlPath}/**/*.gql`);
+  private loadQueries() {
+    const files = glob.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
 
-    files.forEach((file) => {
+    files.forEach((file: string) => {
       if (path.extname(file) === '.gql') {
         const content = fs.readFileSync(file, 'utf8');
         const parsedQuery = parse(content);
