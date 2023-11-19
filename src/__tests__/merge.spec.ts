@@ -171,7 +171,7 @@ describe('mergeQueries', () => {
   }
 }`,
       `query {
-  salary {
+  salaries {
     amount
   }
 }`,

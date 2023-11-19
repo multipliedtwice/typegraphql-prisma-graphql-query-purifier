@@ -450,10 +450,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.53.0":
-  version: 8.53.0
-  resolution: "@eslint/js@npm:8.53.0"
-  checksum: e0d5cfb0000aaee237c8e6d6d6e366faa60b1ef7f928ce17778373aa44d3b886368f6d5e1f97f913f0f16801aad016db8b8df78418c9d18825c15590328028af
+"@eslint/js@npm:8.54.0":
+  version: 8.54.0
+  resolution: "@eslint/js@npm:8.54.0"
+  checksum: 6d88a6f711ef0133566b5340e3178a178fbb297585766460f195d0a9db85688f1e5cf8559fd5748aeb3131e2096c66595b323d8edab22df015acda68f1ebde92
   languageName: node
   linkType: hard
 
@@ -1029,11 +1029,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:^20.8.10":
-  version: 20.9.1
-  resolution: "@types/node@npm:20.9.1"
+  version: 20.9.2
+  resolution: "@types/node@npm:20.9.2"
   dependencies:
     undici-types: ~5.26.4
-  checksum: bb893c6790733dac32818c1ca170fa466622dec39a0ade4639463e1358cb811771e242accbd065e7a1bfe59adc989c0ee59be65e462d3a0ab49043426f0b7637
+  checksum: 5bbb8fb2248fc5c5c4071d9809fb9af85997677c07124d65665202b53283a3b7bdff26fb844e9ee407e3847dfce6399c2b01e3329ea44a4b720647b1b987c678
   languageName: node
   linkType: hard
 
@@ -1431,9 +1431,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001541":
-  version: 1.0.30001562
-  resolution: "caniuse-lite@npm:1.0.30001562"
-  checksum: 414ed45ae47a432607be1c9588bd478440acb033e46ede74c97501bfdb9ba4b1615e221d3ce7c7be55e1e0834725fd1ce5bf5e037bb9dd384c8e85b5e83dc6d1
+  version: 1.0.30001563
+  resolution: "caniuse-lite@npm:1.0.30001563"
+  checksum: c90a1e6efc72fc73ad4a756011242211406883b36dde3a01726e7246281dcbceaf78e1ee61d1298624c4a69cf81c12b41e8d2a2f1b7c89ed84c9333026a0bfbd
   languageName: node
   linkType: hard
 
@@ -1668,9 +1668,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.587
-  resolution: "electron-to-chromium@npm:1.4.587"
-  checksum: 86d06fd6074bdfd0e726eb5809067d826b7275ac3417dc9caa651b467919231450b7892329c02b857d8f62c5353738e243796639a8b21ede1acc0f8f95ab37fb
+  version: 1.4.588
+  resolution: "electron-to-chromium@npm:1.4.588"
+  checksum: 446bdd4754183a6635c535c31ffc2c61d0679692b72e2b63f13fc0fcdfc0d2a4db9f8214ee71d9b862d8b63b14e2c5ed122bb5cd5538dc8899b76aff7e4628d6
   languageName: node
   linkType: hard
 
@@ -1773,13 +1773,13 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^8.53.0":
-  version: 8.53.0
-  resolution: "eslint@npm:8.53.0"
+  version: 8.54.0
+  resolution: "eslint@npm:8.54.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
     "@eslint/eslintrc": ^2.1.3
-    "@eslint/js": 8.53.0
+    "@eslint/js": 8.54.0
     "@humanwhocodes/config-array": ^0.11.13
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
@@ -1816,7 +1816,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 2da808655c7aa4b33f8970ba30d96b453c3071cc4d6cd60d367163430677e32ff186b65270816b662d29139283138bff81f28dddeb2e73265495245a316ed02c
+  checksum: 7e876e9da2a18a017271cf3733d05a3dfbbe469272d75753408c6ea5b1646c71c6bb18cb91e10ca930144c32c1ce3701e222f1ae6784a3975a69f8f8aa68e49f
   languageName: node
   linkType: hard
 
@@ -3087,11 +3087,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^10.0.1, lru-cache@npm:^9.1.1 || ^10.0.0":
-  version: 10.0.2
-  resolution: "lru-cache@npm:10.0.2"
-  dependencies:
-    semver: ^7.3.5
-  checksum: 83ad0e899d79f48574bdda131fe8157c6d65cbd073a6e78e0d1a3467a85dce1ef4d8dc9fd618a56c57a068271501c81d54471e13f84dd121e046b155ed061ed4
+  version: 10.0.3
+  resolution: "lru-cache@npm:10.0.3"
+  checksum: e4b100c5a6b2ac778c0f63711499b5098686205c57907d8c04a413270d37089112d9bd0192dfa36940eb5d94b88c7db54fdb6fd23319c8f89903cfd4323ea06c
   languageName: node
   linkType: hard
 

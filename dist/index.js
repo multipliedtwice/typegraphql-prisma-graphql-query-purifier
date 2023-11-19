@@ -28,17 +28,22 @@ class GraphQLQueryPurifier {
             }
             // Get all allowed queries as an array of strings
             const allowedQueries = Object.values(this.queryMap);
-            if (allowedQueries.length === 0) {
+            if (!allowedQueries.length) {
                 console.warn('Warning: No GraphQL queries were loaded in GraphQLQueryPurifier. ' +
                     'Ensure that your .gql files are located in the specified directory: ' +
                     this.gqlPath);
-                return res
-                    .status(500)
-                    .send('GraphQL queries are not loaded. Please check server logs for more details.');
             }
             if (req.body && req.body.query) {
                 // Use mergeQueries to filter the incoming request query
-                req.body.query = (0, merge_1.mergeQueries)(req.body.query, allowedQueries);
+                const filteredQuery = (0, merge_1.mergeQueries)(req.body.query, allowedQueries);
+                if (!filteredQuery.trim()) {
+                    // Log the incident for monitoring
+                    console.warn(`Query was blocked due to security rules: ${req.body.query}`);
+                    return res.status(403).send('The requested query is not allowed.');
+                }
+                else {
+                    req.body.query = filteredQuery;
+                }
             }
             next();
         };
