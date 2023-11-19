@@ -1,31 +1,41 @@
-import { FieldNode, parse, print, visit } from 'graphql';
+import { ASTNode, FieldNode, parse, print, visit } from 'graphql';
+
+function getPath(node: FieldNode, ancestors: ASTNode[]) {
+  // Build the path from the ancestors and the current node
+  const path = ancestors
+    .map((ancestor) => (ancestor.kind === 'Field' ? ancestor.name.value : null))
+    .filter(Boolean);
+  path.push(node.name.value);
+  return path.join('.');
+}
 
 export function mergeQueries(
   requestQuery: string,
   allowedQueries: string[]
 ): string {
   if (!requestQuery.trim()) {
-    return ''; // Return an empty string for empty requestQuery
+    return '';
   }
 
   const parsedRequestQuery = parse(requestQuery);
   const allowedQueryASTs = allowedQueries.map((query) => parse(query));
 
-  const allowedFields = new Set<string>();
-  // Extract allowed fields from allowedQueryASTs
+  const allowedPaths = new Set<string>();
+  // Extract allowed paths from allowedQueryASTs
   allowedQueryASTs.forEach((ast) => {
     visit(ast, {
-      Field(node) {
-        allowedFields.add(node.name.value);
+      Field(node, key, parent, path, ancestors) {
+        allowedPaths.add(getPath(node, ancestors as ASTNode[]));
       },
     });
   });
 
-  // Modify the AST of the request query based on allowed fields
+  // Modify the AST of the request query based on allowed paths
   const modifiedAST = visit(parsedRequestQuery, {
-    Field(node: FieldNode) {
-      if (!allowedFields.has(node.name.value)) {
-        return null; // This removes the field from the AST
+    Field(node, key, parent, path, ancestors) {
+      const currentPath = getPath(node, ancestors as ASTNode[]);
+      if (!allowedPaths.has(currentPath)) {
+        return null; // Remove the field from the AST
       }
       return undefined; // Continue visiting child nodes
     },

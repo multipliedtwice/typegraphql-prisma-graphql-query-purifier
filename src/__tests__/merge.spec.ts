@@ -149,4 +149,34 @@ describe('mergeQueries', () => {
 }`;
     expect(mergeQueries(requestQuery, allowedQueries)).toBe(expected);
   });
+
+  test('should handle subqueries', () => {
+    const requestQuery = `query {
+  employees {
+    salary {
+      amount
+    }
+    name
+  }
+}`;
+    const allowedQueries = [
+      `query {
+  departments {
+    id
+    name
+    employees {
+      id
+      name
+    }
+  }
+}`,
+      `query {
+  salary {
+    amount
+  }
+}`,
+    ];
+    const expected = ``;
+    expect(mergeQueries(requestQuery, allowedQueries)).toBe(expected);
+  });
 });
