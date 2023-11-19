@@ -11,7 +11,21 @@ const path_1 = __importDefault(require("path"));
 const glob_1 = __importDefault(require("glob"));
 const merge_1 = require("./merge");
 class GraphQLQueryPurifier {
+    /**
+     * Constructs a GraphQLQueryPurifier instance.
+     * @param {Object} params - Configuration parameters.
+     * @param {string} params.gqlPath - Path to the directory containing .gql files.
+     * @param {boolean} [params.allowAll=false] - Whether to allow all queries.
+     * @param {boolean} [params.allowStudio=false] - Whether to allow Apollo Studio introspection queries.
+     */
     constructor({ gqlPath, allowAll = false, allowStudio = false, }) {
+        /**
+         * Middleware function to filter incoming GraphQL queries based on the allowed list.
+         * If a query is not allowed, it's replaced with a minimal query.
+         * @param {Request} req - The request object.
+         * @param {Response} res - The response object.
+         * @param {NextFunction} next - The next middleware function in the stack.
+         */
         this.filter = (req, res, next) => {
             if (this.allowAll)
                 return next();
@@ -50,9 +64,22 @@ class GraphQLQueryPurifier {
         this.gqlPath = gqlPath;
         this.queryMap = {};
         this.loadQueries();
+        this.startWatchingFiles();
         this.allowAll = allowAll;
         this.allowStudio = allowStudio;
     }
+    startWatchingFiles() {
+        fs_1.default.watch(this.gqlPath, { recursive: true }, (eventType, filename) => {
+            if (filename && path_1.default.extname(filename) === '.gql') {
+                console.log(`Detected ${eventType} in ${filename}`);
+                this.loadQueries();
+            }
+        });
+    }
+    /**
+     * Loads queries from .gql files in the specified directory and updates the query map.
+     * @private
+     */
     loadQueries() {
         const files = glob_1.default.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
         files.forEach((file) => {

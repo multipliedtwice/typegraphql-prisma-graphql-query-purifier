@@ -206,4 +206,21 @@ describe('mergeQueries', () => {
     const expected = ``;
     expect(mergeQueries(requestQuery, allowedQueries)).toBe(expected);
   });
+
+  test('should handle subqueries', () => {
+    const requestQuery = `query GetDepartment {
+  departments {
+    name
+  }
+}`;
+    const allowedQueries = [
+      `query departments {
+  departments {
+    id
+  }
+}`,
+    ];
+    const expected = ``;
+    expect(mergeQueries(requestQuery, allowedQueries)).toBe(expected);
+  });
 });

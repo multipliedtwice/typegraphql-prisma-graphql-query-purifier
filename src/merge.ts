@@ -11,7 +11,8 @@ function getPath(node: FieldNode, ancestors: ASTNode[]) {
 
 export function mergeQueries(
   requestQuery: string,
-  allowedQueries: string[]
+  allowedQueries: string[],
+  operationName?: string
 ): string {
   if (!requestQuery.trim()) {
     return '';
