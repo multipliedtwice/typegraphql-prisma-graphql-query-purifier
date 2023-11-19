@@ -2,7 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 export declare class GraphQLQueryPurifier {
     private gqlPath;
     private queryMap;
-    constructor(gqlPath: string);
+    private allowStudio?;
+    private allowAll;
+    constructor({ gqlPath, allowAll, allowStudio, }: {
+        gqlPath: string;
+        allowStudio?: boolean;
+        allowAll?: boolean;
+    });
     private loadQueries;
-    filter: (req: Request, res: Response, next: NextFunction) => void;
+    filter: (req: Request, res: Response, next: NextFunction) => void | Response<any, Record<string, any>>;
 }

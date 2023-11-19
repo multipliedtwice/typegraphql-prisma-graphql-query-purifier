@@ -1,13 +1,13 @@
 {
   "name": "graphql-query-purifier",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A small library to match .gql queries vs user input. Removes fields from user requests that are not expected by your frontend code.",
   "main": "./dist/index.js",
   "author": "multipliedtwice",
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "build": "tsc && terser -c -m toplevel -o dist/index.js -- dist/index.js"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
