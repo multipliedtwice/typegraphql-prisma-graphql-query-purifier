@@ -4,6 +4,8 @@
 
 This package provides a middleware for Express.js applications to manage and filter GraphQL queries based on `.gql` files. It is designed to enhance security and efficiency by allowing only specified queries to be processed by your GraphQL server.
 
+### [Demo](https://github.com/multipliedtwice/graphql-query-purifier-example)
+
 ## Usage with [typegraphql-prisma](https://www.npmjs.com/package/typegraphql-prisma)
 
 TypeGraphQL-Prisma is a powerful integration that significantly simplifies backend development by automatically generating a fully-featured Node.js GraphQL API based on your Prisma schema. It turns your database schema into a fully-typed GraphQL API, making it an excellent tool for developers looking to bootstrap and quickly maintain robust Node.js GraphQL servers.
