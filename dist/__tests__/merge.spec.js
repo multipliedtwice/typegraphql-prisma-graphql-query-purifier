@@ -167,4 +167,30 @@ describe('mergeQueries', () => {
         const expected = ``;
         expect((0, merge_1.mergeQueries)(requestQuery, allowedQueries)).toBe(expected);
     });
+    test('should handle subqueries', () => {
+        const requestQuery = `query ExampleQuery($where: DepartmentWhereUniqueInput!) {
+  department(where: $where) {
+    id
+  }
+}`;
+        const allowedQueries = [
+            `query {
+  departments {
+    id
+    name
+    employees {
+      id
+      name
+    }
+  }
+}`,
+            `query {
+  salaries {
+    amount
+  }
+}`,
+        ];
+        const expected = ``;
+        expect((0, merge_1.mergeQueries)(requestQuery, allowedQueries)).toBe(expected);
+    });
 });

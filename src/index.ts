@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-import { OperationDefinitionNode, parse } from 'graphql';
+import { GraphQLError, OperationDefinitionNode, parse } from 'graphql';
 import path from 'path';
 // @ts-ignore
 import glob from 'glob';
@@ -33,27 +33,43 @@ export class GraphQLQueryPurifier {
 
     files.forEach((file: string) => {
       if (path.extname(file) === '.gql') {
-        const content = fs.readFileSync(file, 'utf8');
-        const parsedQuery = parse(content);
+        const content = fs.readFileSync(file, 'utf8').trim();
 
-        parsedQuery.definitions.forEach((definition) => {
-          if (definition.kind === 'OperationDefinition') {
-            const operationDefinition = definition as OperationDefinitionNode;
+        if (!content) {
+          console.warn(`Warning: Empty or invalid GraphQL file found: ${file}`);
+          return;
+        }
 
-            let queryName = operationDefinition.name?.value;
-            if (!queryName) {
-              // Extract the name from the first field of the selection set
-              const firstField = operationDefinition.selectionSet.selections[0];
-              if (firstField && firstField.kind === 'Field') {
-                queryName = firstField.name.value;
+        try {
+          const parsedQuery = parse(content);
+          parsedQuery.definitions.forEach((definition) => {
+            if (definition.kind === 'OperationDefinition') {
+              const operationDefinition = definition as OperationDefinitionNode;
+
+              let queryName = operationDefinition.name?.value;
+              if (!queryName) {
+                // Extract the name from the first field of the selection set
+                const firstField =
+                  operationDefinition.selectionSet.selections[0];
+                if (firstField && firstField.kind === 'Field') {
+                  queryName = firstField.name.value;
+                }
+              }
+
+              if (queryName) {
+                this.queryMap[queryName] = content;
               }
             }
-
-            if (queryName) {
-              this.queryMap[queryName] = content;
-            }
+          });
+        } catch (error) {
+          if (error instanceof GraphQLError) {
+            console.error(
+              `Error parsing GraphQL file ${file}: ${error.message}`
+            );
+          } else {
+            console.error(`Unexpected error processing file ${file}: ${error}`);
           }
-        });
+        }
       }
     });
   }
@@ -90,12 +106,11 @@ export class GraphQLQueryPurifier {
       const filteredQuery = mergeQueries(req.body.query, allowedQueries);
 
       if (!filteredQuery.trim()) {
-        // Log the incident for monitoring
         console.warn(
           `Query was blocked due to security rules: ${req.body.query}`
         );
-
-        return res.status(403).send('The requested query is not allowed.');
+        req.body.query = '{ __typename }';
+        delete req.body.operationName; // Remove the operation name
       } else {
         req.body.query = filteredQuery;
       }

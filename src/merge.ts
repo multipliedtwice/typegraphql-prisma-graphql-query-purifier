@@ -41,5 +41,17 @@ export function mergeQueries(
     },
   });
 
+  // Check if the modified query has any fields left in its selection set
+  const hasFields = modifiedAST.definitions.some(
+    (def) =>
+      def.kind === 'OperationDefinition' &&
+      def.selectionSet.selections.length > 0
+  );
+
+  if (!hasFields) {
+    // Return a placeholder or minimal query
+    return '';
+  }
+
   return print(modifiedAST);
 }
