@@ -2,9 +2,9 @@
 
 ![backticks-codeblocks](./static/typegraphql-prisma-purifier.png)
 
-This package provides a middleware for Express.js applications to manage and filter GraphQL queries based on `.gql` files. It is designed to enhance security and efficiency by allowing only specified queries to be processed by your GraphQL server.
-
 ### [Demo](https://github.com/multipliedtwice/graphql-query-purifier-example)
+
+This package provides a middleware for Express.js applications to manage and filter GraphQL queries based on `.gql` files. It is designed to enhance security and efficiency by allowing only specified queries to be processed by your GraphQL server.
 
 ## Usage with [typegraphql-prisma](https://www.npmjs.com/package/typegraphql-prisma)
 
