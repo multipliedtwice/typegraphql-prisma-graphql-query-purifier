@@ -17,7 +17,6 @@ With all benefits of typegraphql-prisma and its resolvers, the main concern is s
 ## Features
 
 - **Query Filtering**: Filters incoming GraphQL queries based on a list of allowed queries defined in `.gql` files.
-- **Allowed Query Merge**: Allowing `getCompanies { name }` and `getCompanies { id }` will be resolved into `getCompanies { name id }`
 - **Easy Integration**: Seamlessly integrates with existing Express.js and Apollo Server setups.
 - **Customizable**: Easily adaptable to different GraphQL schema setups.
 

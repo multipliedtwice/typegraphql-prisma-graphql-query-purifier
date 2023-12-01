@@ -5,11 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GraphQLQueryPurifier = void 0;
 const fs_1 = __importDefault(require("fs"));
+const graphql_1 = require("graphql");
 const path_1 = __importDefault(require("path"));
 // @ts-ignore
 const glob_1 = __importDefault(require("glob"));
 const merge_1 = require("./merge");
-const merge_allowed_1 = require("./merge-allowed");
+const get_allowed_query_1 = require("./get-allowed-query");
 class GraphQLQueryPurifier {
     /**
      * Constructs a GraphQLQueryPurifier instance.
@@ -20,6 +21,13 @@ class GraphQLQueryPurifier {
      * @param {boolean} [params.debug=false] - Flag to enable logging of input/output.
      */
     constructor({ gqlPath, allowAll = false, allowStudio = false, debug = false, }) {
+        /**
+         * Middleware function to filter incoming GraphQL queries based on the allowed list.
+         * If a query is not allowed, it's replaced with a minimal query.
+         * @param {Request} req - The request object.
+         * @param {Response} res - The response object.
+         * @param {NextFunction} next - The next middleware function in the stack.
+         */
         /**
          * Middleware function to filter incoming GraphQL queries based on the allowed list.
          * If a query is not allowed, it's replaced with a minimal query.
@@ -41,23 +49,16 @@ class GraphQLQueryPurifier {
                         .send('Access to studio is disabled by GraphQLQueryPurifier, pass { allowStudio: true }');
                 }
             }
-            // Get all allowed queries as an array of strings
-            const allowedQueries = Object.values(this.queryMap);
-            if (!allowedQueries.length) {
-                console.warn('Warning: No GraphQL queries were loaded in GraphQLQueryPurifier. ' +
-                    'Ensure that your .gql files are located in the specified directory: ' +
-                    this.gqlPath);
-            }
             if (req.body && req.body.query) {
-                // Use mergeQueries to filter the incoming request query
-                const filteredQuery = (0, merge_1.mergeQueries)(req.body.query, allowedQueries, this.debug);
-                if (!filteredQuery.trim()) {
-                    console.warn(`Query was blocked due to security rules: ${req.body.query}`);
-                    req.body.query = '{ __typename }';
-                    delete req.body.operationName; // Remove the operation name
+                const allowedQuery = (0, get_allowed_query_1.getAllowedQueryForRequest)(req.body.query, this.queryMap);
+                if (allowedQuery) {
+                    // Use mergeQueries with the specific allowed query
+                    const filteredQuery = (0, merge_1.mergeQueries)(req.body.query, allowedQuery, this.debug);
+                    // Existing code...
                 }
                 else {
-                    req.body.query = filteredQuery;
+                    console.warn(`Query was blocked: ${req.body.query}`);
+                    req.body.query = '{ __typename }'; // Replace with a minimal query
                 }
             }
             next();
@@ -84,20 +85,22 @@ class GraphQLQueryPurifier {
      */
     loadQueries() {
         const files = glob_1.default.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
-        const fileContents = files
-            .map((file) => {
+        this.queryMap = {};
+        files.forEach((file) => {
             const content = fs_1.default.readFileSync(file, 'utf8').trim();
             if (!content) {
                 console.warn(`Warning: Empty or invalid GraphQL file found: ${file}`);
-                return '';
+                return;
             }
-            return content;
-        })
-            .filter((content) => content !== '');
-        const mergedQueries = (0, merge_allowed_1.mergeAllowedGraphQLQueries)(fileContents);
-        this.queryMap = {};
-        mergedQueries.forEach((query, resolver) => {
-            this.queryMap[resolver] = query;
+            const parsedQuery = (0, graphql_1.parse)(content);
+            const operationDefinition = parsedQuery.definitions.find((def) => def.kind === 'OperationDefinition');
+            if (operationDefinition) {
+                const operationName = operationDefinition.name?.value || '';
+                const firstField = operationDefinition.selectionSet.selections.find((sel) => sel.kind === 'Field');
+                const firstFieldName = firstField ? firstField.name.value : '';
+                const key = `${operationName}.${firstFieldName}`.trim();
+                this.queryMap[key] = content;
+            }
         });
     }
 }

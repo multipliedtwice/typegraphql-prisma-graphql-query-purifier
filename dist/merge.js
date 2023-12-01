@@ -2,31 +2,32 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mergeQueries = void 0;
 const graphql_1 = require("graphql");
+function getFirstFieldName(operation) {
+    const firstField = operation.selectionSet.selections.find((sel) => sel.kind === 'Field');
+    return firstField ? firstField.name.value : undefined;
+}
 function getPath(node, ancestors) {
-    // Build the path from the ancestors and the current node
     const path = ancestors
         .map((ancestor) => (ancestor.kind === 'Field' ? ancestor.name.value : null))
         .filter(Boolean);
     path.push(node.name.value);
     return path.join('.');
 }
-function mergeQueries(requestQuery, allowedQueries, debug = false) {
+function mergeQueries(requestQuery, allowedQuery, debug = false) {
     if (!requestQuery.trim()) {
         return '';
     }
-    if (debug) {
-        console.log('Incoming Query:', requestQuery);
-    }
     const parsedRequestQuery = (0, graphql_1.parse)(requestQuery);
-    const allowedQueryASTs = allowedQueries.map((query) => (0, graphql_1.parse)(query));
+    if (!allowedQuery) {
+        return ''; // Query is not allowed
+    }
+    const allowedAST = (0, graphql_1.parse)(allowedQuery);
     const allowedPaths = new Set();
-    // Extract allowed paths from allowedQueryASTs
-    allowedQueryASTs.forEach((ast) => {
-        (0, graphql_1.visit)(ast, {
-            Field(node, key, parent, path, ancestors) {
-                allowedPaths.add(getPath(node, ancestors));
-            },
-        });
+    // Extract allowed paths from the specific allowed AST
+    (0, graphql_1.visit)(allowedAST, {
+        Field(node, key, parent, path, ancestors) {
+            allowedPaths.add(getPath(node, ancestors));
+        },
     });
     // Modify the AST of the request query based on allowed paths
     const modifiedAST = (0, graphql_1.visit)(parsedRequestQuery, {

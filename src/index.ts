@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-import { GraphQLError, OperationDefinitionNode, parse } from 'graphql';
+import {
+  FieldNode,
+  GraphQLError,
+  OperationDefinitionNode,
+  parse,
+} from 'graphql';
 import path from 'path';
 // @ts-ignore
 import glob from 'glob';
 import { mergeQueries } from './merge';
-import { mergeAllowedGraphQLQueries } from './merge-allowed';
+import { getAllowedQueryForRequest } from './get-allowed-query';
 
 export class GraphQLQueryPurifier {
   /**
@@ -83,24 +88,40 @@ export class GraphQLQueryPurifier {
    */
   private loadQueries() {
     const files = glob.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
-    const fileContents = files
-      .map((file: string) => {
-        const content = fs.readFileSync(file, 'utf8').trim();
-        if (!content) {
-          console.warn(`Warning: Empty or invalid GraphQL file found: ${file}`);
-          return '';
-        }
-        return content;
-      })
-      .filter((content: string) => content !== '');
-
-    const mergedQueries = mergeAllowedGraphQLQueries(fileContents);
     this.queryMap = {};
-    mergedQueries.forEach((query, resolver) => {
-      this.queryMap[resolver] = query;
+
+    files.forEach((file: string) => {
+      const content = fs.readFileSync(file, 'utf8').trim();
+      if (!content) {
+        console.warn(`Warning: Empty or invalid GraphQL file found: ${file}`);
+        return;
+      }
+
+      const parsedQuery = parse(content);
+      const operationDefinition = parsedQuery.definitions.find(
+        (def) => def.kind === 'OperationDefinition'
+      ) as OperationDefinitionNode | undefined;
+
+      if (operationDefinition) {
+        const operationName = operationDefinition.name?.value || '';
+        const firstField = operationDefinition.selectionSet.selections.find(
+          (sel) => sel.kind === 'Field'
+        ) as FieldNode | undefined;
+        const firstFieldName = firstField ? firstField.name.value : '';
+
+        const key = `${operationName}.${firstFieldName}`.trim();
+        this.queryMap[key] = content;
+      }
     });
   }
 
+  /**
+   * Middleware function to filter incoming GraphQL queries based on the allowed list.
+   * If a query is not allowed, it's replaced with a minimal query.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function in the stack.
+   */
   /**
    * Middleware function to filter incoming GraphQL queries based on the allowed list.
    * If a query is not allowed, it's replaced with a minimal query.
@@ -125,34 +146,27 @@ export class GraphQLQueryPurifier {
       }
     }
 
-    // Get all allowed queries as an array of strings
-    const allowedQueries = Object.values(this.queryMap);
-    if (!allowedQueries.length) {
-      console.warn(
-        'Warning: No GraphQL queries were loaded in GraphQLQueryPurifier. ' +
-          'Ensure that your .gql files are located in the specified directory: ' +
-          this.gqlPath
-      );
-    }
-
     if (req.body && req.body.query) {
-      // Use mergeQueries to filter the incoming request query
-      const filteredQuery = mergeQueries(
+      const allowedQuery = getAllowedQueryForRequest(
         req.body.query,
-        allowedQueries,
-        this.debug
+        this.queryMap
       );
 
-      if (!filteredQuery.trim()) {
-        console.warn(
-          `Query was blocked due to security rules: ${req.body.query}`
+      if (allowedQuery) {
+        // Use mergeQueries with the specific allowed query
+        const filteredQuery = mergeQueries(
+          req.body.query,
+          allowedQuery,
+          this.debug
         );
-        req.body.query = '{ __typename }';
-        delete req.body.operationName; // Remove the operation name
+
+        // Existing code...
       } else {
-        req.body.query = filteredQuery;
+        console.warn(`Query was blocked: ${req.body.query}`);
+        req.body.query = '{ __typename }'; // Replace with a minimal query
       }
     }
+
     next();
   };
 }

@@ -7,3 +7,5 @@ node_modules
 .npmrc
 coverage
 merge-2.spec.ts
+merge-2.spec.js
+**/merge-2.spec.js

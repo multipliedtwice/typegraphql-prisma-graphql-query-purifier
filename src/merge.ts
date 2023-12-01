@@ -1,7 +1,21 @@
-import { ASTNode, FieldNode, parse, print, visit } from 'graphql';
+import {
+  parse,
+  print,
+  visit,
+  OperationDefinitionNode,
+  FieldNode,
+  ASTNode,
+} from 'graphql';
+function getFirstFieldName(
+  operation: OperationDefinitionNode
+): string | undefined {
+  const firstField = operation.selectionSet.selections.find(
+    (sel) => sel.kind === 'Field'
+  );
+  return firstField ? (firstField as any).name.value : undefined;
+}
 
-function getPath(node: FieldNode, ancestors: ASTNode[]) {
-  // Build the path from the ancestors and the current node
+function getPath(node: FieldNode, ancestors: ASTNode[]): string {
   const path = ancestors
     .map((ancestor) => (ancestor.kind === 'Field' ? ancestor.name.value : null))
     .filter(Boolean);
@@ -11,26 +25,27 @@ function getPath(node: FieldNode, ancestors: ASTNode[]) {
 
 export function mergeQueries(
   requestQuery: string,
-  allowedQueries: string[],
+  allowedQuery: string,
   debug: boolean = false
 ): string {
   if (!requestQuery.trim()) {
     return '';
   }
-  if (debug) {
-    console.log('Incoming Query:', requestQuery);
-  }
-  const parsedRequestQuery = parse(requestQuery);
-  const allowedQueryASTs = allowedQueries.map((query) => parse(query));
 
+  const parsedRequestQuery = parse(requestQuery);
+
+  if (!allowedQuery) {
+    return ''; // Query is not allowed
+  }
+
+  const allowedAST = parse(allowedQuery);
   const allowedPaths = new Set<string>();
-  // Extract allowed paths from allowedQueryASTs
-  allowedQueryASTs.forEach((ast) => {
-    visit(ast, {
-      Field(node, key, parent, path, ancestors) {
-        allowedPaths.add(getPath(node, ancestors as ASTNode[]));
-      },
-    });
+
+  // Extract allowed paths from the specific allowed AST
+  visit(allowedAST, {
+    Field(node, key, parent, path, ancestors) {
+      allowedPaths.add(getPath(node, ancestors as ASTNode[]));
+    },
   });
 
   // Modify the AST of the request query based on allowed paths
