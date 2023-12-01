@@ -5,6 +5,7 @@ import path from 'path';
 // @ts-ignore
 import glob from 'glob';
 import { mergeQueries } from './merge';
+import { mergeAllowedGraphQLQueries } from './merge-allowed';
 
 export class GraphQLQueryPurifier {
   /**
@@ -33,20 +34,30 @@ export class GraphQLQueryPurifier {
   private allowAll: boolean;
 
   /**
+   * Flag to enable logging of input/output.
+   * @private
+   */
+
+  private debug: boolean;
+
+  /**
    * Constructs a GraphQLQueryPurifier instance.
    * @param {Object} params - Configuration parameters.
    * @param {string} params.gqlPath - Path to the directory containing .gql files.
    * @param {boolean} [params.allowAll=false] - Whether to allow all queries.
    * @param {boolean} [params.allowStudio=false] - Whether to allow Apollo Studio introspection queries.
+   * @param {boolean} [params.debug=false] - Flag to enable logging of input/output.
    */
   constructor({
     gqlPath,
     allowAll = false,
     allowStudio = false,
+    debug = false,
   }: {
     gqlPath: string;
     allowStudio?: boolean;
     allowAll?: boolean;
+    debug?: boolean;
   }) {
     this.gqlPath = gqlPath;
     this.queryMap = {};
@@ -54,6 +65,7 @@ export class GraphQLQueryPurifier {
     this.startWatchingFiles();
     this.allowAll = allowAll;
     this.allowStudio = allowStudio;
+    this.debug = debug;
   }
 
   public startWatchingFiles() {
@@ -71,47 +83,21 @@ export class GraphQLQueryPurifier {
    */
   private loadQueries() {
     const files = glob.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
-
-    files.forEach((file: string) => {
-      if (path.extname(file) === '.gql') {
+    const fileContents = files
+      .map((file: string) => {
         const content = fs.readFileSync(file, 'utf8').trim();
-
         if (!content) {
           console.warn(`Warning: Empty or invalid GraphQL file found: ${file}`);
-          return;
+          return '';
         }
+        return content;
+      })
+      .filter((content: string) => content !== '');
 
-        try {
-          const parsedQuery = parse(content);
-          parsedQuery.definitions.forEach((definition) => {
-            if (definition.kind === 'OperationDefinition') {
-              const operationDefinition = definition as OperationDefinitionNode;
-
-              let queryName = operationDefinition.name?.value;
-              if (!queryName) {
-                // Extract the name from the first field of the selection set
-                const firstField =
-                  operationDefinition.selectionSet.selections[0];
-                if (firstField && firstField.kind === 'Field') {
-                  queryName = firstField.name.value;
-                }
-              }
-
-              if (queryName) {
-                this.queryMap[queryName] = content;
-              }
-            }
-          });
-        } catch (error) {
-          if (error instanceof GraphQLError) {
-            console.error(
-              `Error parsing GraphQL file ${file}: ${error.message}`
-            );
-          } else {
-            console.error(`Unexpected error processing file ${file}: ${error}`);
-          }
-        }
-      }
+    const mergedQueries = mergeAllowedGraphQLQueries(fileContents);
+    this.queryMap = {};
+    mergedQueries.forEach((query, resolver) => {
+      this.queryMap[resolver] = query;
     });
   }
 
@@ -151,7 +137,11 @@ export class GraphQLQueryPurifier {
 
     if (req.body && req.body.query) {
       // Use mergeQueries to filter the incoming request query
-      const filteredQuery = mergeQueries(req.body.query, allowedQueries);
+      const filteredQuery = mergeQueries(
+        req.body.query,
+        allowedQueries,
+        this.debug
+      );
 
       if (!filteredQuery.trim()) {
         console.warn(

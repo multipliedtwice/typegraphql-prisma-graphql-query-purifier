@@ -10,9 +10,12 @@ function getPath(node, ancestors) {
     path.push(node.name.value);
     return path.join('.');
 }
-function mergeQueries(requestQuery, allowedQueries) {
+function mergeQueries(requestQuery, allowedQueries, debug = false) {
     if (!requestQuery.trim()) {
         return '';
+    }
+    if (debug) {
+        console.log('Incoming Query:', requestQuery);
     }
     const parsedRequestQuery = (0, graphql_1.parse)(requestQuery);
     const allowedQueryASTs = allowedQueries.map((query) => (0, graphql_1.parse)(query));
@@ -40,6 +43,10 @@ function mergeQueries(requestQuery, allowedQueries) {
     if (!hasValidFields) {
         return ''; // Return an empty string if no valid fields are left
     }
-    return (0, graphql_1.print)(modifiedAST);
+    const modifiedQuery = (0, graphql_1.print)(modifiedAST);
+    if (debug) {
+        console.log('Modified Query:', modifiedQuery);
+    }
+    return modifiedQuery;
 }
 exports.mergeQueries = mergeQueries;

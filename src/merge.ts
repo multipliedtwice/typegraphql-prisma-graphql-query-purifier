@@ -11,12 +11,15 @@ function getPath(node: FieldNode, ancestors: ASTNode[]) {
 
 export function mergeQueries(
   requestQuery: string,
-  allowedQueries: string[]
+  allowedQueries: string[],
+  debug: boolean = false
 ): string {
   if (!requestQuery.trim()) {
     return '';
   }
-
+  if (debug) {
+    console.log('Incoming Query:', requestQuery);
+  }
   const parsedRequestQuery = parse(requestQuery);
   const allowedQueryASTs = allowedQueries.map((query) => parse(query));
 
@@ -51,5 +54,11 @@ export function mergeQueries(
     return ''; // Return an empty string if no valid fields are left
   }
 
-  return print(modifiedAST);
+  const modifiedQuery = print(modifiedAST);
+
+  if (debug) {
+    console.log('Modified Query:', modifiedQuery);
+  }
+
+  return modifiedQuery;
 }

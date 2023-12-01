@@ -1,1 +1,1 @@
-export declare function mergeQueries(requestQuery: string, allowedQueries: string[]): string;
+export declare function mergeQueries(requestQuery: string, allowedQueries: string[], debug?: boolean): string;

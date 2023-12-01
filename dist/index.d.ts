@@ -21,16 +21,23 @@ export declare class GraphQLQueryPurifier {
      */
     private allowAll;
     /**
+     * Flag to enable logging of input/output.
+     * @private
+     */
+    private debug;
+    /**
      * Constructs a GraphQLQueryPurifier instance.
      * @param {Object} params - Configuration parameters.
      * @param {string} params.gqlPath - Path to the directory containing .gql files.
      * @param {boolean} [params.allowAll=false] - Whether to allow all queries.
      * @param {boolean} [params.allowStudio=false] - Whether to allow Apollo Studio introspection queries.
+     * @param {boolean} [params.debug=false] - Flag to enable logging of input/output.
      */
-    constructor({ gqlPath, allowAll, allowStudio, }: {
+    constructor({ gqlPath, allowAll, allowStudio, debug, }: {
         gqlPath: string;
         allowStudio?: boolean;
         allowAll?: boolean;
+        debug?: boolean;
     });
     startWatchingFiles(): void;
     /**
