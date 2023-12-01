@@ -21,7 +21,6 @@ export function getAllowedQueryForRequest(
   const key = `${
     operationName ? operationName + '.' : ''
   }${firstFieldName}`.trim();
-  console.log('key :>> ', key);
-  console.log('allowedQueriesMap[key] :>> ', allowedQueriesMap[key]);
+
   return allowedQueriesMap[key] || '';
 }

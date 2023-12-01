@@ -1,19 +1,4 @@
-import {
-  parse,
-  print,
-  visit,
-  OperationDefinitionNode,
-  FieldNode,
-  ASTNode,
-} from 'graphql';
-function getFirstFieldName(
-  operation: OperationDefinitionNode
-): string | undefined {
-  const firstField = operation.selectionSet.selections.find(
-    (sel) => sel.kind === 'Field'
-  );
-  return firstField ? (firstField as any).name.value : undefined;
-}
+import { parse, print, visit, FieldNode, ASTNode } from 'graphql';
 
 function getPath(node: FieldNode, ancestors: ASTNode[]): string {
   const path = ancestors

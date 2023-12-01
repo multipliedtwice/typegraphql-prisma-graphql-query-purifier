@@ -52,12 +52,5 @@ export declare class GraphQLQueryPurifier {
      * @param {Response} res - The response object.
      * @param {NextFunction} next - The next middleware function in the stack.
      */
-    /**
-     * Middleware function to filter incoming GraphQL queries based on the allowed list.
-     * If a query is not allowed, it's replaced with a minimal query.
-     * @param {Request} req - The request object.
-     * @param {Response} res - The response object.
-     * @param {NextFunction} next - The next middleware function in the stack.
-     */
     filter: (req: Request, res: Response, next: NextFunction) => void | Response<any, Record<string, any>>;
 }

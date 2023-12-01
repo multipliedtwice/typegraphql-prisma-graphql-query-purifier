@@ -2,10 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mergeQueries = void 0;
 const graphql_1 = require("graphql");
-function getFirstFieldName(operation) {
-    const firstField = operation.selectionSet.selections.find((sel) => sel.kind === 'Field');
-    return firstField ? firstField.name.value : undefined;
-}
 function getPath(node, ancestors) {
     const path = ancestors
         .map((ancestor) => (ancestor.kind === 'Field' ? ancestor.name.value : null))

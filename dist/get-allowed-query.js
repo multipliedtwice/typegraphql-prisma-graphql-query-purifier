@@ -13,8 +13,6 @@ function getAllowedQueryForRequest(requestQuery, allowedQueriesMap) {
     const firstField = operationDefinition.selectionSet.selections.find((sel) => sel.kind === 'Field');
     const firstFieldName = firstField ? firstField.name.value : '';
     const key = `${operationName ? operationName + '.' : ''}${firstFieldName}`.trim();
-    console.log('key :>> ', key);
-    console.log('allowedQueriesMap[key] :>> ', allowedQueriesMap[key]);
     return allowedQueriesMap[key] || '';
 }
 exports.getAllowedQueryForRequest = getAllowedQueryForRequest;

@@ -1,11 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-import {
-  FieldNode,
-  GraphQLError,
-  OperationDefinitionNode,
-  parse,
-} from 'graphql';
+import { FieldNode, OperationDefinitionNode, parse } from 'graphql';
 import path from 'path';
 // @ts-ignore
 import glob from 'glob';
@@ -115,13 +110,6 @@ export class GraphQLQueryPurifier {
     });
   }
 
-  /**
-   * Middleware function to filter incoming GraphQL queries based on the allowed list.
-   * If a query is not allowed, it's replaced with a minimal query.
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   */
   /**
    * Middleware function to filter incoming GraphQL queries based on the allowed list.
    * If a query is not allowed, it's replaced with a minimal query.
