@@ -148,7 +148,15 @@ export class GraphQLQueryPurifier {
           this.debug
         );
 
-        // Existing code...
+        if (!filteredQuery.trim()) {
+          console.warn(
+            `Query was blocked due to security rules: ${req.body.query}`
+          );
+          req.body.query = '{ __typename }';
+          delete req.body.operationName;
+        } else {
+          req.body.query = filteredQuery;
+        }
       } else {
         console.warn(`Query was blocked: ${req.body.query}`);
         req.body.query = '{ __typename }'; // Replace with a minimal query
