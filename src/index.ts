@@ -107,6 +107,7 @@ export class GraphQLQueryPurifier {
         const key = `${operationName}.${firstFieldName}`.trim();
         this.queryMap[key] = content;
       }
+      console.log('this.queryMap', this.queryMap);
     });
   }
 
