@@ -121,7 +121,7 @@ describe('aliases', () => {
         jobAd {
           id
           location
-          secretTitle: title
+          secretTitle: secret
           workMode
         }
       }
@@ -132,7 +132,6 @@ describe('aliases', () => {
     jobAd {
       id
       location
-      secretTitle: title
       workMode
     }
   }
