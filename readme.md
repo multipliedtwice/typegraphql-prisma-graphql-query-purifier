@@ -1,6 +1,7 @@
 # GraphQL Query Purifier
+[![Coverage](https://img.shields.io/codecov/c/github/multipliedtwice/graphql-query-purifier/main.svg)](https://codecov.io/gh/multipliedtwice/graphql-query-purifier)
 
-![backticks-codeblocks](./static/typegraphql-prisma-purifier.png)
+![typegraphql-prisma-purifier](./static/typegraphql-prisma-purifier.png)
 
 ### [Demo](https://github.com/multipliedtwice/graphql-query-purifier-example)
 
