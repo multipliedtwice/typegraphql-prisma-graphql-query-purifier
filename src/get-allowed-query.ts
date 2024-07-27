@@ -4,7 +4,7 @@ export function getAllowedQueryForRequest(
   requestQuery: string,
   allowedQueriesMap: { [key: string]: string }
 ): string {
-  if (!requestQuery) return '';
+  if (!requestQuery || !requestQuery.trim()) return '';
   const parsedRequestQuery = parse(requestQuery);
   const operationDefinition = parsedRequestQuery.definitions.find(
     (def) => def.kind === 'OperationDefinition'

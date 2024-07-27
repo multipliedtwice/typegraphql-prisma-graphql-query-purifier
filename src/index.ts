@@ -83,6 +83,10 @@ export class GraphQLQueryPurifier {
    */
   private loadQueries() {
     const files = glob.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
+    if (!files || files.length === 0) {
+      console.warn(`No GraphQL files found in path: ${this.gqlPath}`);
+      return;
+    }
     this.queryMap = {};
 
     files.forEach((file: string) => {

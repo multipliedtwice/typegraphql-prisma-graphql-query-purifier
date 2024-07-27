@@ -28,6 +28,7 @@
   "homepage": "https://github.com/multipliedtwice/graphql-query-purifier#readme",
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
     "eslint": "^8.56.0",

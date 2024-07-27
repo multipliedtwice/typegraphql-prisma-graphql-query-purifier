@@ -290,4 +290,15 @@ describe('mergeQueries', () => {
     );
     expect(mergeQueries(requestQuery, allowedQuery)).toBe(expected);
   });
+
+  test('should handle requestQuery with only whitespace', () => {
+    const requestQuery = '   ';
+    const allowedQueries = { user: `{ user { id, name } }` };
+    const expected = '';
+    const allowedQuery = getAllowedQueryForRequest(
+      requestQuery,
+      allowedQueries
+    );
+    expect(mergeQueries(requestQuery, allowedQuery)).toBe(expected);
+  });
 });
