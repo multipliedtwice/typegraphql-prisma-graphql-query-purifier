@@ -131,4 +131,7 @@ Contributions are welcome!
 
 This project is licensed under the MIT License.
 
-Free Kanban app with integrated chat: https://rememo.io
+#### Credits:
+- [Super Kick Gym](https://en.bjj-bangkok.com)
+
+- [Rememo](https://rememo.io)
