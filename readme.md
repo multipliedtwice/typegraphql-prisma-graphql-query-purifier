@@ -132,6 +132,6 @@ Contributions are welcome!
 This project is licensed under the MIT License.
 
 #### Credits:
-- [Super Kick Gym](https://en.bjj-bangkok.com)
+- Super Kick Gym - [Brazilian Jiu Jitsu in Bangkok](https://en.bjj-bangkok.com)
 
-- [Rememo](https://rememo.io)
+- Rememo - [Free Task Management and Corporate Chat](https://rememo.io)
