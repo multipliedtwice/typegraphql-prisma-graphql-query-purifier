@@ -19,9 +19,7 @@ describe('GraphQLQueryPurifier', () => {
     mockRes.status = jest.fn().mockReturnThis();
     mockRes.send = jest.fn();
 
-    // Mock the necessary functions
     (fs.watch as jest.Mock).mockImplementation((path, options, callback) => {
-      // Simulate file change
       callback('change', 'test.gql');
       return { close: jest.fn() };
     });
@@ -99,5 +97,45 @@ describe('GraphQLQueryPurifier', () => {
     purifier.filter(mockReq, mockRes, mockNext);
     expect(mockReq.body.query).toBe('{ __typename }');
     expect(mockNext).toHaveBeenCalled();
+  });
+
+  test('should throw error for duplicate operation names when loading queries', () => {
+    (glob.sync as jest.Mock).mockReturnValue([
+      './graphql/queries/findMyJobs1.gql',
+      './graphql/queries/findMyJobs2.gql',
+    ]);
+
+    (fs.readFileSync as jest.Mock).mockReturnValueOnce(`
+      query FindMyJobs {
+        data: findJobs {
+          id
+          createdAt
+          job {
+            id
+            title
+          }
+        }
+      }
+    `).mockReturnValueOnce(`
+      query FindMyJobs {
+        data: findJobs {
+          id
+          createdAt
+          deletedAt
+          job {
+            id
+            title
+            company {
+              name
+            }
+          }
+        }
+      }
+    `);
+
+    expect(() => {
+      // @ts-ignore
+      purifier.loadQueries();
+    }).toThrowError('Duplicate operation name detected: FindMyJobs.');
   });
 });
