@@ -2,27 +2,26 @@ import { getAllowedQueryForRequest } from '../get-allowed-query';
 import { mergeQueries } from '../merge';
 
 const allowedQueries = {
-  'FindMyTalentJobApplications.findJobApplications': `query FindMyTalentJobApplications {
-          data: findJobApplications {
+  'FindMyJobs.findJobs': `query FindMyJobs {
+          data: findJobs {
             id
             createdAt
             deletedAt
-            jobAd {
+            job {
               id
-              location
               title
-              publisherCompany {
+              company {
                 name
               }
               workMode
             }
           }
         }`,
-  'FindMyCompanyTalentJobApplications.findJobApplications': `query FindMyCompanyTalentJobApplications($where: TalentJobApplicationWhereInput, $orderBy: [TalentJobApplicationOrderByWithRelationInput!]) {
-          data: findJobApplications(where: $where, orderBy: $orderBy) {
+  'FindMyCompanyTalentJobApplications.findJobs': `query FindMyCompanyTalentJobApplications($where: TalentJobApplicationWhereInput, $orderBy: [TalentJobApplicationOrderByWithRelationInput!]) {
+          data: findJobs(where: $where, orderBy: $orderBy) {
             createdAt
             id
-            jobAd {
+            job {
               title
             }
             talentProfile {
@@ -33,17 +32,16 @@ const allowedQueries = {
 };
 
 describe('aliases', () => {
-  test('FindMyTalentJobApplications should handle aliases (request talentProfile when it is not allowed)', () => {
-    const requestQuery = `query FindMyTalentJobApplications {
-          data: findJobApplications {
+  test('FindMyJobs should handle aliases (request talentProfile when it is not allowed)', () => {
+    const requestQuery = `query FindMyJobs {
+          data: findJobs {
             id
             createdAt
             deletedAt
-            jobAd {
+            job {
               id
-              location
               title
-              publisherCompany {
+              company {
                 name
               }
               workMode
@@ -54,16 +52,15 @@ describe('aliases', () => {
           }
         }`;
 
-    const expected = `query FindMyTalentJobApplications {
-  data: findJobApplications {
+    const expected = `query FindMyJobs {
+  data: findJobs {
     id
     createdAt
     deletedAt
-    jobAd {
+    job {
       id
-      location
       title
-      publisherCompany {
+      company {
         name
       }
       workMode
@@ -79,10 +76,10 @@ describe('aliases', () => {
 
   test('FindMyCompanyTalentJobApplications should handle aliases2  (request workMode when it is not allowed)', () => {
     const requestQuery = `query FindMyCompanyTalentJobApplications($where: TalentJobApplicationWhereInput, $orderBy: [TalentJobApplicationOrderByWithRelationInput!]) {
-          data: findJobApplications(where: $where, orderBy: $orderBy) {
+          data: findJobs(where: $where, orderBy: $orderBy) {
             createdAt
             id
-            jobAd {
+            job {
               title
               __typename
             }
@@ -95,10 +92,10 @@ describe('aliases', () => {
           }
         }`;
     const expected = `query FindMyCompanyTalentJobApplications($where: TalentJobApplicationWhereInput, $orderBy: [TalentJobApplicationOrderByWithRelationInput!]) {
-  data: findJobApplications(where: $where, orderBy: $orderBy) {
+  data: findJobs(where: $where, orderBy: $orderBy) {
     createdAt
     id
-    jobAd {
+    job {
       title
     }
     talentProfile {
@@ -115,23 +112,21 @@ describe('aliases', () => {
   });
 
   test('Exploit with Aliased Fields to bypass restrictions', () => {
-    const requestQuery = `query FindMyTalentJobApplications {
-      data: findJobApplications {
+    const requestQuery = `query FindMyJobs {
+      data: findJobs {
         id
-        jobAd {
+        job {
           id
-          location
           secretTitle: secret
           workMode
         }
       }
     }`;
-    const expected = `query FindMyTalentJobApplications {
-  data: findJobApplications {
+    const expected = `query FindMyJobs {
+  data: findJobs {
     id
-    jobAd {
+    job {
       id
-      location
       workMode
     }
   }

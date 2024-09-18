@@ -109,9 +109,15 @@ export class GraphQLQueryPurifier {
         const firstFieldName = firstField ? firstField.name.value : '';
 
         const key = `${operationName}.${firstFieldName}`.trim();
-        this.queryMap[key] = content;
+
+        if (this.queryMap[key]) {
+          throw new Error(
+            `Duplicate operation name detected: ${key}. File: ${file}`
+          );
+        } else {
+          this.queryMap[key] = content;
+        }
       }
-      console.log('this.queryMap', this.queryMap);
     });
   }
 
