@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllowedQueryForRequest = void 0;
 const graphql_1 = require("graphql");
 function getAllowedQueryForRequest(requestQuery, allowedQueriesMap) {
-    if (!requestQuery)
+    if (!requestQuery || !requestQuery.trim())
         return '';
     const parsedRequestQuery = (0, graphql_1.parse)(requestQuery);
     const operationDefinition = parsedRequestQuery.definitions.find((def) => def.kind === 'OperationDefinition');

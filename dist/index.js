@@ -47,7 +47,14 @@ class GraphQLQueryPurifier {
                 if (allowedQuery) {
                     // Use mergeQueries with the specific allowed query
                     const filteredQuery = (0, merge_1.mergeQueries)(req.body.query, allowedQuery, this.debug);
-                    // Existing code...
+                    if (!filteredQuery.trim()) {
+                        console.warn(`Query was blocked due to security rules: ${req.body.query}`);
+                        req.body.query = '{ __typename }';
+                        delete req.body.operationName;
+                    }
+                    else {
+                        req.body.query = filteredQuery;
+                    }
                 }
                 else {
                     console.warn(`Query was blocked: ${req.body.query}`);
@@ -78,6 +85,10 @@ class GraphQLQueryPurifier {
      */
     loadQueries() {
         const files = glob_1.default.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
+        if (!files || files.length === 0) {
+            console.warn(`No GraphQL files found in path: ${this.gqlPath}`);
+            return;
+        }
         this.queryMap = {};
         files.forEach((file) => {
             const content = fs_1.default.readFileSync(file, 'utf8').trim();
@@ -92,7 +103,12 @@ class GraphQLQueryPurifier {
                 const firstField = operationDefinition.selectionSet.selections.find((sel) => sel.kind === 'Field');
                 const firstFieldName = firstField ? firstField.name.value : '';
                 const key = `${operationName}.${firstFieldName}`.trim();
-                this.queryMap[key] = content;
+                if (this.queryMap[key]) {
+                    throw new Error(`Duplicate operation name detected: ${key}. File: ${file}`);
+                }
+                else {
+                    this.queryMap[key] = content;
+                }
             }
         });
     }
