@@ -2235,25 +2235,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-query-purifier@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "graphql-query-purifier@workspace:."
-  dependencies:
-    "@types/express": ^4.17.21
-    "@types/glob": ^8.1.0
-    "@types/jest": ^29.5.11
-    "@types/node": ^20.10.6
-    eslint: ^8.56.0
-    fast-glob: ^3.3.3
-    graphql: ^16.8.1
-    jest: ^29.7.0
-    prettier: ^3.1.1
-    terser: ^5.26.0
-    ts-jest: ^29.1.1
-    typescript: ^5.3.3
-  languageName: unknown
-  linkType: soft
-
 "graphql@npm:^16.8.1":
   version: 16.8.1
   resolution: "graphql@npm:16.8.1"
@@ -4196,6 +4177,25 @@ __metadata:
   checksum: e6b32a3b3877f04339bae01c193b273c62ba7bfc9e325b8703c4ee1b32dc8fe4ef5dfa54bf78265e069f7667d058e360ae0f37be5af9f153b22382cd55a9afe0
   languageName: node
   linkType: hard
+
+"typegraphql-prisma-graphql-query-purifier@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "typegraphql-prisma-graphql-query-purifier@workspace:."
+  dependencies:
+    "@types/express": ^4.17.21
+    "@types/glob": ^8.1.0
+    "@types/jest": ^29.5.11
+    "@types/node": ^20.10.6
+    eslint: ^8.56.0
+    fast-glob: ^3.3.3
+    graphql: ^16.8.1
+    jest: ^29.7.0
+    prettier: ^3.1.1
+    terser: ^5.26.0
+    ts-jest: ^29.1.1
+    typescript: ^5.3.3
+  languageName: unknown
+  linkType: soft
 
 "typescript@npm:^5.3.3":
   version: 5.3.3
