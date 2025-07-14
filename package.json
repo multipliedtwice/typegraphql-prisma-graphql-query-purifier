@@ -1,5 +1,5 @@
 {
-  "name": "graphql-query-purifier",
+  "name": "typegraphql-prisma-graphql-query-purifier",
   "version": "1.0.18",
   "description": "A small library to match .gql queries vs user input. Removes fields from user requests that are not expected by your frontend code.",
   "main": "./dist/index.js",
