@@ -7,8 +7,7 @@ exports.GraphQLQueryPurifier = void 0;
 const fs_1 = __importDefault(require("fs"));
 const graphql_1 = require("graphql");
 const path_1 = __importDefault(require("path"));
-// @ts-ignore
-const glob_1 = __importDefault(require("glob"));
+const fast_glob_1 = __importDefault(require("fast-glob"));
 const merge_1 = require("./merge");
 const get_allowed_query_1 = require("./get-allowed-query");
 class GraphQLQueryPurifier {
@@ -84,7 +83,7 @@ class GraphQLQueryPurifier {
      * @private
      */
     loadQueries() {
-        const files = glob_1.default.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
+        const files = fast_glob_1.default.sync(`${this.gqlPath}/**/*.gql`, { absolute: true });
         if (!files || files.length === 0) {
             console.warn(`No GraphQL files found in path: ${this.gqlPath}`);
             return;

@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import { FieldNode, OperationDefinitionNode, parse } from 'graphql';
 import path from 'path';
-// @ts-ignore
-import glob from 'glob';
+import fg from 'fast-glob';
 import { mergeQueries } from './merge';
 import { getAllowedQueryForRequest } from './get-allowed-query';
 
@@ -82,7 +81,7 @@ export class GraphQLQueryPurifier {
    * @private
    */
   private loadQueries() {
-    const files = glob.sync(`${this.gqlPath}/**/*.gql`.replace(/\\/g, '/'));
+    const files = fg.sync(`${this.gqlPath}/**/*.gql`, { absolute: true });
     if (!files || files.length === 0) {
       console.warn(`No GraphQL files found in path: ${this.gqlPath}`);
       return;

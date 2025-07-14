@@ -1,10 +1,10 @@
 import { GraphQLQueryPurifier } from '..';
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
-import glob from 'glob';
+import fg from 'fast-glob';
 
 jest.mock('fs');
-jest.mock('glob');
+jest.mock('fast-glob');
 
 describe('GraphQLQueryPurifier', () => {
   let purifier: GraphQLQueryPurifier;
@@ -33,7 +33,7 @@ describe('GraphQLQueryPurifier', () => {
       }
     `);
 
-    (glob.sync as jest.Mock).mockReturnValue(['./graphql/queries/test.gql']);
+    (fg.sync as jest.Mock).mockReturnValue(['./graphql/queries/test.gql']);
   });
 
   afterEach(() => {
@@ -100,7 +100,7 @@ describe('GraphQLQueryPurifier', () => {
   });
 
   test('should throw error for duplicate operation names when loading queries', () => {
-    (glob.sync as jest.Mock).mockReturnValue([
+    (fg.sync as jest.Mock).mockReturnValue([
       './graphql/queries/findMyJobs1.gql',
       './graphql/queries/findMyJobs2.gql',
     ]);
@@ -134,8 +134,7 @@ describe('GraphQLQueryPurifier', () => {
     `);
 
     expect(() => {
-      // @ts-ignore
-      purifier.loadQueries();
+      purifier['loadQueries']();
     }).toThrowError('Duplicate operation name detected: FindMyJobs.');
   });
 });
